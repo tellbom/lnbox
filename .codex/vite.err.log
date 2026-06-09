@@ -1,0 +1,82 @@
+Error: [31m  Failed to scan for dependencies from entries:
+  E:/Web/lnbox/web/index.html
+
+  [39m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mENOENT: no such file or directory, open 'E:\Web\lnbox\web\src\layouts\frontend\components\header.vue'[0m [1m[35m[plugin vite:dep-scan][0m
+
+    script:E:/Web/lnbox/web/src/views/frontend/index.vue?id=0:15:7:
+[37m      15 │ import [32m'/@/layouts/frontend/components/header.vue'[37m
+         ╵        [32m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+  This error came from the "onLoad" callback registered here:
+
+    node_modules/vite/node_modules/esbuild/lib/main.js:1292:20:
+[37m      1292 │       let promise = [32m[37msetup({
+           ╵                     [32m^[0m
+
+    at setup (file:///E:/Web/lnbox/web/node_modules/vite/dist/node/chunks/dep-827b23df.js:44657:19)
+    at handlePlugins (E:\Web\lnbox\web\node_modules\vite\node_modules\esbuild\lib\main.js:1292:21)
+    at buildOrContextImpl (E:\Web\lnbox\web\node_modules\vite\node_modules\esbuild\lib\main.js:978:5)
+    at Object.buildOrContext (E:\Web\lnbox\web\node_modules\vite\node_modules\esbuild\lib\main.js:786:5)
+    at E:\Web\lnbox\web\node_modules\vite\node_modules\esbuild\lib\main.js:2186:68
+    at new Promise (<anonymous>)
+    at Object.context (E:\Web\lnbox\web\node_modules\vite\node_modules\esbuild\lib\main.js:2186:27)
+    at Object.context (E:\Web\lnbox\web\node_modules\vite\node_modules\esbuild\lib\main.js:2026:58)
+    at prepareEsbuildScanner (file:///E:/Web/lnbox/web/node_modules/vite/dist/node/chunks/dep-827b23df.js:44535:26)
+
+
+[31mX [41;31m[[41;97mERROR[41;31m][0m [1mENOENT: no such file or directory, open 'E:\Web\lnbox\web\src\layouts\frontend\components\footer.vue'[0m [1m[35m[plugin vite:dep-scan][0m
+
+    script:E:/Web/lnbox/web/src/views/frontend/index.vue?id=0:16:7:
+[37m      16 │ import [32m'/@/layouts/frontend/components/footer.vue'[37m
+         ╵        [32m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+  This error came from the "onLoad" callback registered here:
+
+    node_modules/vite/node_modules/esbuild/lib/main.js:1292:20:
+[37m      1292 │       let promise = [32m[37msetup({
+           ╵                     [32m^[0m
+
+    at setup (file:///E:/Web/lnbox/web/node_modules/vite/dist/node/chunks/dep-827b23df.js:44657:19)
+    at handlePlugins (E:\Web\lnbox\web\node_modules\vite\node_modules\esbuild\lib\main.js:1292:21)
+    at buildOrContextImpl (E:\Web\lnbox\web\node_modules\vite\node_modules\esbuild\lib\main.js:978:5)
+    at Object.buildOrContext (E:\Web\lnbox\web\node_modules\vite\node_modules\esbuild\lib\main.js:786:5)
+    at E:\Web\lnbox\web\node_modules\vite\node_modules\esbuild\lib\main.js:2186:68
+    at new Promise (<anonymous>)
+    at Object.context (E:\Web\lnbox\web\node_modules\vite\node_modules\esbuild\lib\main.js:2186:27)
+    at Object.context (E:\Web\lnbox\web\node_modules\vite\node_modules\esbuild\lib\main.js:2026:58)
+    at prepareEsbuildScanner (file:///E:/Web/lnbox/web/node_modules/vite/dist/node/chunks/dep-827b23df.js:44535:26)
+
+
+[31mX [41;31m[[41;97mERROR[41;31m][0m [1mENOENT: no such file or directory, open 'E:\Web\lnbox\web\src\layouts\frontend\user.vue'[0m [1m[35m[plugin vite:dep-scan][0m
+
+    src/router/static/memberCenterBase.ts:14:28:
+[37m      14 │     component: () => import([32m'/@/layouts/frontend/user.vue'[37m),
+         ╵                             [32m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+  This error came from the "onLoad" callback registered here:
+
+    node_modules/vite/node_modules/esbuild/lib/main.js:1292:20:
+[37m      1292 │       let promise = [32m[37msetup({
+           ╵                     [32m^[0m
+
+    at setup (file:///E:/Web/lnbox/web/node_modules/vite/dist/node/chunks/dep-827b23df.js:44657:19)
+    at handlePlugins (E:\Web\lnbox\web\node_modules\vite\node_modules\esbuild\lib\main.js:1292:21)
+    at buildOrContextImpl (E:\Web\lnbox\web\node_modules\vite\node_modules\esbuild\lib\main.js:978:5)
+    at Object.buildOrContext (E:\Web\lnbox\web\node_modules\vite\node_modules\esbuild\lib\main.js:786:5)
+    at E:\Web\lnbox\web\node_modules\vite\node_modules\esbuild\lib\main.js:2186:68
+    at new Promise (<anonymous>)
+    at Object.context (E:\Web\lnbox\web\node_modules\vite\node_modules\esbuild\lib\main.js:2186:27)
+    at Object.context (E:\Web\lnbox\web\node_modules\vite\node_modules\esbuild\lib\main.js:2026:58)
+    at prepareEsbuildScanner (file:///E:/Web/lnbox/web/node_modules/vite/dist/node/chunks/dep-827b23df.js:44535:26)
+
+
+    at failureErrorWithLog (E:\Web\lnbox\web\node_modules\vite\node_modules\esbuild\lib\main.js:1649:15)
+    at E:\Web\lnbox\web\node_modules\vite\node_modules\esbuild\lib\main.js:1058:25
+    at runOnEndCallbacks (E:\Web\lnbox\web\node_modules\vite\node_modules\esbuild\lib\main.js:1484:45)
+    at buildResponseToResult (E:\Web\lnbox\web\node_modules\vite\node_modules\esbuild\lib\main.js:1056:7)
+    at E:\Web\lnbox\web\node_modules\vite\node_modules\esbuild\lib\main.js:1068:9
+    at new Promise (<anonymous>)
+    at requestCallbacks.on-end (E:\Web\lnbox\web\node_modules\vite\node_modules\esbuild\lib\main.js:1067:54)
+    at handleRequest (E:\Web\lnbox\web\node_modules\vite\node_modules\esbuild\lib\main.js:729:19)
+    at handleIncomingPacket (E:\Web\lnbox\web\node_modules\vite\node_modules\esbuild\lib\main.js:755:7)
+    at Socket.readFromStdout (E:\Web\lnbox\web\node_modules\vite\node_modules\esbuild\lib\main.js:679:7)
