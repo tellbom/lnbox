@@ -23,8 +23,9 @@ const loadingInstance: LoadingInstance = {
  * 根据运行环境获取基础请求URL
  */
 export const getUrl = (): string => {
-    const value: string = import.meta.env.VITE_AXIOS_BASE_URL as string
-    return value == 'getCurrentDomain' ? window.location.protocol + '//' + window.location.host : value
+    const value = (import.meta.env.VITE_AXIOS_BASE_URL as string | undefined)?.trim()
+    if (!value) return ''
+    return value == 'getCurrentDomain' ? window.location.origin : value
 }
 
 /**
@@ -32,7 +33,7 @@ export const getUrl = (): string => {
  */
 export const getUrlPort = (): string => {
     const url = getUrl()
-    return new URL(url).port
+    return url ? new URL(url, window.location.origin).port : window.location.port
 }
 
 /**
@@ -54,11 +55,6 @@ function createAxios<Data = any, T = ApiPromise<Data>>(axiosConfig: AxiosRequest
         },
         responseType: 'json',
     })
-
-    // 自定义后台入口
-    if (adminBaseRoute.path != '/admin' && isAdminApp() && /^\/admin\//.test(axiosConfig.url!)) {
-        axiosConfig.url = axiosConfig.url!.replace(/^\/admin\//,  '/admin.php/')
-    }
 
     // 合并默认请求选项
     options = Object.assign(
@@ -87,12 +83,11 @@ function createAxios<Data = any, T = ApiPromise<Data>>(axiosConfig: AxiosRequest
                 }
             }
 
-            // 自动携带token
-            if (config.headers) {
-                const token = adminInfo.getToken()
-                if (token) (config.headers as anyObj).batoken = token
-                const userToken = options.anotherToken || userInfo.getToken()
-                if (userToken) (config.headers as anyObj)['ba-user-token'] = userToken
+            // 注入鉴权头：从 Pinia store 实时读取，避免闭包过期 token
+            const adminInfo = useAdminInfo()
+            const token = adminInfo.getToken?.() ?? adminInfo.token ?? ''
+            if (token) {
+                config.headers['Authorization'] = `Bearer ${token}`
             }
 
             return config
@@ -108,104 +103,6 @@ function createAxios<Data = any, T = ApiPromise<Data>>(axiosConfig: AxiosRequest
             removePending(response.config)
             options.loading && closeLoading(options) // 关闭loading
 
-            // if (response.config.responseType == 'json') {
-            //     if (response.data && response.data.code !== 1) {
-            //         if (response.data.code == 409) {
-            //             if (!window.tokenRefreshing) {
-            //                 window.tokenRefreshing = true
-            //                 return refreshToken()
-            //                     .then((res) => {
-            //                         if (res.data.type == 'admin-refresh') {
-            //                             adminInfo.setToken(res.data.token, 'auth')
-            //                             response.headers.batoken = `${res.data.token}`
-            //                             window.requests.forEach((cb) => cb(res.data.token, 'admin-refresh'))
-            //                         } else if (res.data.type == 'user-refresh') {
-            //                             userInfo.setToken(res.data.token, 'auth')
-            //                             response.headers['ba-user-token'] = `${res.data.token}`
-            //                             window.requests.forEach((cb) => cb(res.data.token, 'user-refresh'))
-            //                         }
-            //                         window.requests = []
-            //                         return Axios(response.config)
-            //                     })
-            //                     .catch((err) => {
-            //                         if (isAdminApp()) {
-            //                             adminInfo.removeToken()
-            //                             if (router.currentRoute.value.name != 'adminLogin') {
-            //                                 router.push({ name: 'adminLogin' })
-            //                                 return Promise.reject(err)
-            //                             } else {
-            //                                 response.headers.batoken = ''
-            //                                 window.requests.forEach((cb) => cb('', 'admin-refresh'))
-            //                                 window.requests = []
-            //                                 return Axios(response.config)
-            //                             }
-            //                         } else {
-            //                             userInfo.removeToken()
-            //                             if (router.currentRoute.value.name != 'userLogin') {
-            //                                 router.push({ name: 'userLogin' })
-            //                                 return Promise.reject(err)
-            //                             } else {
-            //                                 response.headers['ba-user-token'] = ''
-            //                                 window.requests.forEach((cb) => cb('', 'user-refresh'))
-            //                                 window.requests = []
-            //                                 return Axios(response.config)
-            //                             }
-            //                         }
-            //                     })
-            //                     .finally(() => {
-            //                         window.tokenRefreshing = false
-            //                     })
-            //             } else {
-            //                 return new Promise((resolve) => {
-            //                     // 用函数形式将 resolve 存入，等待刷新后再执行
-            //                     window.requests.push((token: string, type: string) => {
-            //                         if (type == 'admin-refresh') {
-            //                             response.headers.batoken = `${token}`
-            //                         } else {
-            //                             response.headers['ba-user-token'] = `${token}`
-            //                         }
-            //                         resolve(Axios(response.config))
-            //                     })
-            //                 })
-            //             }
-            //         }
-            //         if (options.showCodeMessage) {
-            //             ElNotification({
-            //                 type: 'error',
-            //                 message: response.data.msg,
-            //                 zIndex: 9999,
-            //             })
-            //         }
-            //         // 自动跳转到路由name或path
-            //         if (response.data.code == 302) {
-            //             router.push({ path: response.data.data.routePath ?? '', name: response.data.data.routeName ?? '' })
-            //         }
-            //         // if (response.data.code == 303) {
-            //         //     const isAdminAppFlag = isAdminApp()
-            //         //     let routerPath = isAdminAppFlag ? adminBaseRoute.path : memberCenterBaseRoutePath
-
-            //         //     // 需要登录，清理 token，转到登录页
-            //         //     if (response.data.data.type == 'need login') {
-            //         //         if (isAdminAppFlag) {
-            //         //             adminInfo.removeToken()
-            //         //         } else {
-            //         //             userInfo.removeToken()
-            //         //         }
-            //         //         routerPath += '/login'
-            //         //     }
-            //         //     router.push({ path: routerPath })
-            //         // }
-            //         // code不等于1, 页面then内的具体逻辑就不执行了
-            //         return Promise.reject(response.data)
-            //     } else if (options.showSuccessMessage && response.data && response.data.code == 1) {
-            //         ElNotification({
-            //             message: response.data.msg ? response.data.msg : i18n.global.t('axios.Operation successful'),
-            //             type: 'success',
-            //             zIndex: 9999,
-            //         })
-            //     }
-            // }
-
             return options.reductDataFormat ? response.data : response
         },
         (error) => {
@@ -215,6 +112,10 @@ function createAxios<Data = any, T = ApiPromise<Data>>(axiosConfig: AxiosRequest
             return Promise.reject(error) // 错误继续返回给到具体页面
         }
     )
+    if (options.urlPrefix && axiosConfig.url && !isAbsoluteUrl(axiosConfig.url)) {
+        axiosConfig.url = joinUrl(options.urlPrefix, axiosConfig.url)
+    }
+
     return Axios(axiosConfig) as T
 }
 
@@ -354,6 +255,14 @@ export function requestPayload(method: Method, data: anyObj) {
     }
 }
 
+function isAbsoluteUrl(url: string): boolean {
+    return /^([a-z][a-z\d+\-.]*:)?\/\//i.test(url)
+}
+
+function joinUrl(prefix: string, url: string): string {
+    return `${prefix.replace(/\/+$/, '')}/${url.replace(/^\/+/, '')}`
+}
+
 interface LoadingInstance {
     target: any
     count: number
@@ -371,6 +280,7 @@ interface Options {
     showCodeMessage?: boolean
     // 是否开启code为1时的信息提示, 默认为false
     showSuccessMessage?: boolean
+    urlPrefix?: string
     // 当前请求使用另外的用户token
     anotherToken?: string
 }

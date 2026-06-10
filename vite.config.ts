@@ -19,7 +19,7 @@ const pathResolve = (dir: string): any => {
 
 // https://vitejs.cn/config/
 const viteConfig = ({ mode }: ConfigEnv): UserConfig => {
-    const { VITE_PORT, VITE_OPEN, VITE_BASE_PATH, VITE_OUT_DIR, VITE_RBAC_BASE_URL, VITE_PROCESS_PROXY_TARGET } = loadEnv(mode, process.cwd())
+    const { VITE_PORT, VITE_OPEN, VITE_BASE_PATH, VITE_OUT_DIR, VITE_RBAC_BASE_URL, VITE_MESSAGE_CENTER_PROXY_TARGET } = loadEnv(mode, process.cwd())
 
     const alias: Record<string, string> = {
         '/@': pathResolve('./src/'),
@@ -42,10 +42,10 @@ const viteConfig = ({ mode }: ConfigEnv): UserConfig => {
                     changeOrigin: true,
                     rewrite: (path) => path.replace(/^\/rbacServer/, ''),
                 },
-                '/process-api': {
-                    target: VITE_PROCESS_PROXY_TARGET,
+                '/messageCenter': {
+                    target: VITE_MESSAGE_CENTER_PROXY_TARGET,
                     changeOrigin: true,
-                    rewrite: (path) => path.replace(/^\/process-api/, ''),
+                    rewrite: (path) => path.replace(/^\/messageCenter/, ''),
                 },
             },
         },
