@@ -110,7 +110,9 @@ function fullTime(iso: string): string {
     const days = ['周日', '周一', '周二', '周三', '周四', '周五', '周六']
     const pad = (value: number) => String(value).padStart(2, '0')
 
-    return `${date.getFullYear()}年${date.getMonth() + 1}月${date.getDate()}日 ${days[date.getDay()]} ${pad(date.getHours())}:${pad(date.getMinutes())}`
+    return `${date.getFullYear()}年${date.getMonth() + 1}月${date.getDate()}日 ${days[date.getDay()]} ${pad(date.getHours())}:${pad(
+        date.getMinutes()
+    )}`
 }
 </script>
 

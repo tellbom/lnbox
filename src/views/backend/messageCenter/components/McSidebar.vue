@@ -3,12 +3,12 @@
         <div class="mc-side__scroll">
             <div class="mc-side__group">
                 <button
-                    v-for="item in mainItems"
-                    :key="item.id"
+                    v-for="item in navItems"
+                    :key="item.path"
                     class="mc-side__item"
-                    :class="{ 'is-active': active === item.id }"
+                    :class="{ 'is-active': isActive(item.path) }"
                     type="button"
-                    @click="onSelect(item.id)"
+                    @click="navigate(item.path)"
                 >
                     <span class="mc-side__ic">
                         <el-icon :size="18">
@@ -16,10 +16,10 @@
                         </el-icon>
                     </span>
                     <span v-if="!collapsed" class="mc-side__label">{{ item.label }}</span>
-                    <span v-if="!collapsed && unreadByFilter[item.id]" class="mc-side__badge">
-                        {{ unreadByFilter[item.id] > 99 ? '99+' : unreadByFilter[item.id] }}
+                    <span v-if="!collapsed && badgeOf(item.badgeKey)" class="mc-side__badge">
+                        {{ badgeOf(item.badgeKey) > 99 ? '99+' : badgeOf(item.badgeKey) }}
                     </span>
-                    <span v-if="collapsed && unreadByFilter[item.id]" class="mc-side__dot" />
+                    <span v-if="collapsed && badgeOf(item.badgeKey)" class="mc-side__dot" />
                 </button>
             </div>
 
@@ -42,24 +42,37 @@
 
 <script setup lang="ts">
 import { Message, Select, Star, View } from '@element-plus/icons-vue'
+import { useRoute, useRouter } from 'vue-router'
+import { adminBaseRoutePath } from '/@/router/static/adminBase'
+import { useMcStore } from '/@/stores/messageCenter'
 
 defineProps<{
-    active: string
     collapsed: boolean
-    unreadByFilter: Record<string, number>
 }>()
 
-const emit = defineEmits<{
-    select: [id: string]
-}>()
+const route = useRoute()
+const router = useRouter()
+const mcStore = useMcStore()
 
-const onSelect = (id: string) => emit('select', id)
-
-const mainItems = [
-    { id: 'all', label: '全部消息', icon: Message },
-    { id: 'unread', label: '未读消息', icon: View },
-    { id: 'read', label: '已读消息', icon: Select },
+const navItems = [
+    { path: 'message-center/all', label: '全部消息', icon: Message, badgeKey: 'all' },
+    { path: 'message-center/unread', label: '未读消息', icon: View, badgeKey: 'unread' },
+    { path: 'message-center/read', label: '已读消息', icon: Select, badgeKey: 'read' },
 ]
+
+const fullPathOf = (path: string) => `${adminBaseRoutePath}/${path}`
+
+const isActive = (path: string) => route.path.includes(path)
+
+const navigate = (path: string) => {
+    const target = fullPathOf(path)
+    if (route.path !== target) router.push({ path: target })
+}
+
+const badgeOf = (badgeKey: string) => {
+    if (badgeKey === 'read') return 0
+    return mcStore.unreadCount
+}
 </script>
 
 <style scoped>

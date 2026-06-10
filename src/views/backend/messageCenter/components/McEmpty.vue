@@ -37,8 +37,8 @@ const title = computed(() => {
 
 const sub = computed(() => {
     if (normalizedQuery.value) return '试试更换关键词，或清除搜索条件。'
-    if (props.filter === 'unread') return '太棒了，您已处理完所有未读消息。'
-    if (props.filter === 'favorites') return '后续可在此集中查看您收藏的重要通知。'
+    if (props.filter === 'unread') return '您已经处理完所有未读消息。'
+    if (props.filter === 'favorites') return '后续可在此集中查看收藏的重要通知。'
     return '这里还没有任何通知。'
 })
 </script>
@@ -50,8 +50,8 @@ const sub = computed(() => {
     align-items: center;
     justify-content: center;
     padding: 64px 24px;
-    text-align: center;
     color: var(--wf-ink-3, #7a7a7a);
+    text-align: center;
     user-select: none;
 }
 

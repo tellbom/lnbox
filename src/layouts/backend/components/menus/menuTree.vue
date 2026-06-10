@@ -77,8 +77,10 @@ const onClickSubMenu = (menu: RouteRecordRaw) => {
 }
 
 const getMenuBadge = (path: string): number => {
-    if (!path.includes('message-center')) return 0
-    return mcStore.unreadCount
+    if (path.includes('message-center/all') || path.includes('message-center/unread')) {
+        return mcStore.unreadCount
+    }
+    return 0
 }
 </script>
 

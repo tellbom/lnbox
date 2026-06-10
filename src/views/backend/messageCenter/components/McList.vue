@@ -46,9 +46,7 @@
         </div>
 
         <div ref="scrollEl" class="mc-list__scroll">
-            <template v-if="messages.length === 0">
-                <McEmpty :filter="filter" :query="query" />
-            </template>
+            <McEmpty v-if="messages.length === 0" :filter="filter" :query="query" />
 
             <template v-else>
                 <div v-for="group in groups" :key="group.key" class="mc-grp">
@@ -302,7 +300,8 @@ watch(
     font-weight: 500;
 }
 
-.mc-list__tools {
+.mc-list__tools,
+.mc-bulkbar__actions {
     display: flex;
     gap: 8px;
 }
@@ -339,10 +338,6 @@ watch(
     border-color: transparent;
 }
 
-.mc-tbtn--ghost:hover {
-    background: rgba(0, 0, 0, 0.05);
-}
-
 .mc-bulkbar {
     flex-shrink: 0;
     max-height: 0;
@@ -374,11 +369,6 @@ watch(
     font-weight: 600;
 }
 
-.mc-bulkbar__actions {
-    display: flex;
-    gap: 8px;
-}
-
 .mc-list__scroll {
     flex: 1;
     min-height: 0;
@@ -401,9 +391,13 @@ watch(
     backdrop-filter: blur(2px);
 }
 
-.mc-grp__label {
+.mc-grp__label,
+.mc-grp__num {
     color: #86868b;
     font-size: 12px;
+}
+
+.mc-grp__label {
     font-weight: 600;
     letter-spacing: 0.05em;
 }
@@ -412,11 +406,6 @@ watch(
     flex: 1;
     height: 1px;
     background: #efeff1;
-}
-
-.mc-grp__num {
-    color: #86868b;
-    font-size: 12px;
 }
 
 .mc-row {
@@ -438,10 +427,6 @@ watch(
 
 .mc-row.is-selected {
     background: color-mix(in srgb, #0066cc 5%, #ffffff);
-}
-
-.mc-row.is-selected.is-active {
-    background: color-mix(in srgb, #0066cc 9%, #ffffff);
 }
 
 .mc-row.is-active::before {
@@ -497,22 +482,19 @@ watch(
         border-color 0.12s;
 }
 
-.mc-row:hover .mc-row__check {
+.mc-row:hover .mc-row__check,
+.mc-row__check.is-on {
     opacity: 1;
 }
 
-.mc-row:hover .mc-row__dot {
+.mc-row:hover .mc-row__dot,
+.mc-row.is-selected .mc-row__dot {
     opacity: 0;
 }
 
 .mc-row__check.is-on {
     background: #0066cc;
     border-color: #0066cc;
-    opacity: 1;
-}
-
-.mc-row.is-selected .mc-row__dot {
-    opacity: 0;
 }
 
 .mc-row__body {
@@ -560,10 +542,6 @@ watch(
     line-height: 1.4;
     text-overflow: ellipsis;
     white-space: nowrap;
-}
-
-.mc-row.is-unread .mc-row__preview {
-    color: #65656b;
 }
 
 .mc-list__sentinel {
