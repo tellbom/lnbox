@@ -2,7 +2,7 @@
  * @Author: fzq
  * @Date: 2026-05-27 11:44:01
  * @LastEditors: fzq
- * @LastEditTime: 2026-05-27 14:07:54
+ * @LastEditTime: 2026-06-10 15:19:12
  * @Description:
  * @FilePath: \web\src\views\backend\login.vue
 -->
@@ -117,7 +117,7 @@ onMounted(async () => {
         state.value = 'success'
         // 短暂展示成功状态后跳转，避免闪烁
         setTimeout(() => {
-            router.replace({ path: adminBaseRoutePath + bridge.routePath })
+            router.replace({ path: `${adminBaseRoutePath}/${bridge.routePath}` })
         }, 600)
 
     } catch (error) {

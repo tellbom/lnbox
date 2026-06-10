@@ -7,3 +7,5 @@ Forced re-optimization of dependencies
   [32m[1mVITE[22m v4.5.14[39m  [2mready in [0m[1m509[22m[2m[0m ms[22m
 
   [32m➜[39m  [1mLocal[22m:   [36mhttp://127.0.0.1:[1m5696[22m/[39m
+[2m14:06:35[22m [36m[1m[vite][22m[39m [32mpage reload [39m[2mmessagecenter/消息中心-standalone-src.html[22m
+[2m14:32:45[22m [36m[1m[vite][22m[39m [32mpage reload [39m[2mTemp/messagecenter/消息中心.html[22m
