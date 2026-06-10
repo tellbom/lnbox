@@ -19,6 +19,9 @@
             <el-menu-item :index="menu.path" :key="menu.path" @click="onClickMenu(menu)">
                 <Icon v-if="showIcon" :name="getMenuIcon(menu)" color="currentColor" size="16px" />
                 <span class="menu-title">{{ menu.meta?.title ? menu.meta?.title : $t('noTitle') }}</span>
+                <span v-if="getMenuBadge(menu.path)" class="menu-unread-badge">
+                    {{ getMenuBadge(menu.path) > 99 ? '99+' : getMenuBadge(menu.path) }}
+                </span>
             </el-menu-item>
         </template>
     </template>
@@ -31,9 +34,11 @@ import { getFirstRoute, onClickMenu } from '/@/utils/router'
 import { ElNotification } from 'element-plus'
 import { useI18n } from 'vue-i18n'
 import { computed } from 'vue'
+import { useMcStore } from '/@/stores/messageCenter'
 
 const { t } = useI18n()
 const config = useConfig()
+const mcStore = useMcStore()
 
 interface Props {
     menus: RouteRecordRaw[]
@@ -69,6 +74,11 @@ const onClickSubMenu = (menu: RouteRecordRaw) => {
             })
         }
     }
+}
+
+const getMenuBadge = (path: string): number => {
+    if (!path.includes('message-center')) return 0
+    return mcStore.unreadCount
 }
 </script>
 
@@ -108,6 +118,22 @@ const onClickSubMenu = (menu: RouteRecordRaw) => {
 
 .is-active > .icon {
     color: inherit !important;
+}
+
+.menu-unread-badge {
+    display: inline-block;
+    flex-shrink: 0;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 5px;
+    margin-left: auto;
+    color: #ffffff;
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 18px;
+    text-align: center;
+    background-color: #0066cc;
+    border-radius: 9px;
 }
 
 /*
