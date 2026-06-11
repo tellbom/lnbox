@@ -45,7 +45,7 @@ export const useMcStore = defineStore('messageCenter', () => {
         loadError.value = false
 
         try {
-            const data = await getMyMessages(0, 100)
+            const data = await getMyMessages(1, 100)
             messages.value = data ?? []
         } catch {
             loadError.value = true

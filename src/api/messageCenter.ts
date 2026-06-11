@@ -19,7 +19,7 @@ export interface MarkResult {
 const BASE = '/api/message-center'
 const PROXY_PREFIX = '/messageCenter'
 
-export function getMyMessages(page = 0, limit = 100) {
+export function getMyMessages(page = 1, limit = 100) {
     return createAxios<MessageItem[]>({
         url: `${BASE}/my`,
         method: 'get',
