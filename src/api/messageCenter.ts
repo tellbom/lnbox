@@ -2,6 +2,7 @@ import createAxios from '/@/utils/axios'
 
 export interface MessageItem {
     messageId: string
+    sourceSystem?: string | null
     title: string
     content: string
     url: string | null

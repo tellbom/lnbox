@@ -186,6 +186,21 @@ curl "http://localhost:5000/api/message-center/my?page=1&limit=10" \
 ]
 ```
 
+**响应字段说明**：
+
+| 字段 | 类型 | 说明 |
+| --- | --- | --- |
+| `messageId` | `string` | 消息 ID，用于标记已读 / 未读 |
+| `sourceSystem` | `string` | 发送方来源，由发送接口从 Keycloak `preferred_username` 写入 |
+| `businessType` | `string` | 业务类型 |
+| `businessId` | `string` | 业务 ID |
+| `title` | `string` | 消息标题 |
+| `content` | `string` | 消息正文 |
+| `url` | `string \| null` | 关联业务页面 |
+| `read` | `boolean` | 是否已读 |
+| `seen` | `boolean` | 是否已查看 |
+| `createdAt` | `string` | 创建时间，ISO 8601 格式 |
+
 ### 未读数量
 
 `GET /api/message-center/unread-count`
