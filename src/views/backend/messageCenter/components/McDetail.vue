@@ -83,7 +83,7 @@
 
                 <div class="mc-detail__divider" />
 
-                <div class="mc-detail__content">{{ msg.content }}</div>
+                <div class="mc-detail__content" v-html="renderedContent" />
             </div>
 
             <div v-if="msg.url" class="mc-detail__foot">
@@ -103,10 +103,12 @@
 </template>
 
 <script setup lang="ts">
+import { computed } from 'vue'
 import { Clock, Close, Finished, Message, Select, TopRight, View } from '@element-plus/icons-vue'
+import MarkdownIt from 'markdown-it'
 import type { MessageItem } from '/@/api/messageCenter'
 
-defineProps<{
+const props = defineProps<{
     msg: MessageItem | null
 }>()
 
@@ -115,6 +117,25 @@ const emit = defineEmits<{
     openPage: [url: string]
     close: []
 }>()
+
+const markdown = new MarkdownIt({
+    html: false,
+    linkify: true,
+    breaks: true,
+    typographer: false,
+})
+
+const defaultLinkOpen = markdown.renderer.rules.link_open
+markdown.renderer.rules.link_open = (tokens, idx, options, env, self) => {
+    const token = tokens[idx]
+    token.attrSet('target', '_blank')
+    token.attrSet('rel', 'noopener noreferrer')
+    return defaultLinkOpen ? defaultLinkOpen(tokens, idx, options, env, self) : self.renderToken(tokens, idx, options)
+}
+
+const renderedContent = computed(() => {
+    return props.msg?.content ? markdown.render(props.msg.content) : ''
+})
 
 function fullTime(iso: string): string {
     const date = new Date(iso)
@@ -330,7 +351,131 @@ function fullTime(iso: string): string {
     font-size: 16px;
     line-height: 1.72;
     letter-spacing: 0;
-    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}
+
+.mc-detail__content :deep(*) {
+    box-sizing: border-box;
+}
+
+.mc-detail__content :deep(p) {
+    margin: 0 0 14px;
+}
+
+.mc-detail__content :deep(p:last-child) {
+    margin-bottom: 0;
+}
+
+.mc-detail__content :deep(h1),
+.mc-detail__content :deep(h2),
+.mc-detail__content :deep(h3),
+.mc-detail__content :deep(h4) {
+    margin: 22px 0 10px;
+    color: #1d1d1f;
+    font-weight: 650;
+    line-height: 1.3;
+    letter-spacing: 0;
+}
+
+.mc-detail__content :deep(h1:first-child),
+.mc-detail__content :deep(h2:first-child),
+.mc-detail__content :deep(h3:first-child),
+.mc-detail__content :deep(h4:first-child) {
+    margin-top: 0;
+}
+
+.mc-detail__content :deep(h1) {
+    font-size: 22px;
+}
+
+.mc-detail__content :deep(h2) {
+    font-size: 20px;
+}
+
+.mc-detail__content :deep(h3) {
+    font-size: 18px;
+}
+
+.mc-detail__content :deep(h4) {
+    font-size: 16px;
+}
+
+.mc-detail__content :deep(ul),
+.mc-detail__content :deep(ol) {
+    margin: 0 0 14px;
+    padding-left: 22px;
+}
+
+.mc-detail__content :deep(li + li) {
+    margin-top: 4px;
+}
+
+.mc-detail__content :deep(a) {
+    color: #0066cc;
+    text-decoration: none;
+}
+
+.mc-detail__content :deep(a:hover) {
+    text-decoration: underline;
+}
+
+.mc-detail__content :deep(blockquote) {
+    margin: 16px 0;
+    padding: 10px 14px;
+    color: #65656b;
+    background: #f5f5f7;
+    border-left: 3px solid #c7c7cc;
+    border-radius: 6px;
+}
+
+.mc-detail__content :deep(code) {
+    padding: 2px 5px;
+    color: #1d1d1f;
+    font-family: 'SF Mono', ui-monospace, 'JetBrains Mono', Menlo, Consolas, monospace;
+    font-size: 0.9em;
+    background: #f5f5f7;
+    border-radius: 5px;
+}
+
+.mc-detail__content :deep(pre) {
+    margin: 16px 0;
+    padding: 14px 16px;
+    overflow-x: auto;
+    background: #1f2328;
+    border-radius: 8px;
+}
+
+.mc-detail__content :deep(pre code) {
+    padding: 0;
+    color: #f5f5f7;
+    background: transparent;
+    border-radius: 0;
+}
+
+.mc-detail__content :deep(table) {
+    width: 100%;
+    margin: 16px 0;
+    border-collapse: collapse;
+    font-size: 14px;
+}
+
+.mc-detail__content :deep(th),
+.mc-detail__content :deep(td) {
+    padding: 8px 10px;
+    text-align: left;
+    border: 1px solid #e3e3e6;
+}
+
+.mc-detail__content :deep(th) {
+    font-weight: 600;
+    background: #f5f5f7;
+}
+
+.mc-detail__content :deep(hr) {
+    height: 1px;
+    margin: 22px 0;
+    background: #efeff1;
+    border: 0;
 }
 
 .mc-detail__foot {
