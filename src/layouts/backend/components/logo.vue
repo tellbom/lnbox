@@ -79,7 +79,7 @@ const siteConfig = useSiteConfig()
 const mcStore    = useMcStore()
 
 const brandLetter = computed(() => {
-    return (siteConfig.siteName || 'M').charAt(0).toUpperCase()
+    return (siteConfig.siteName || 'lnbox').charAt(0).toUpperCase()
 })
 
 const todayCount = computed<number | string>(() => {

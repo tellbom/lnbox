@@ -8,7 +8,7 @@
         <!-- 系统标题 -->
         <div class="nav-brand">
             <div class="nav-brand__icon-wrap">
-                <el-icon :size="15"><Bell /></el-icon>
+                <img class="nav-brand__icon" :src="messageCenterIcon" alt="消息中心" />
             </div>
             <span class="nav-brand__name">消息中心</span>
         </div>
@@ -23,11 +23,11 @@
 
 <script setup lang="ts">
 import { useConfig } from '/@/stores/config'
-import { Bell } from '@element-plus/icons-vue'
 import NavTabs from '/@/layouts/backend/components/navBar/tabs.vue'
 import { layoutNavTabsRef } from '/@/stores/refs'
 import NavMenus from '../navMenus.vue'
 import { showShade } from '/@/utils/pageShade'
+import messageCenterIcon from '/@/assets/icons/messagecenter.png'
 
 const config = useConfig()
 
@@ -168,18 +168,25 @@ const onMenuCollapse = () => {
     }
 }
 
-/* Bell 图标包裹：渐变小圆块 */
+/* 消息中心品牌图标 */
 .nav-brand__icon-wrap {
     width: 28px;
     height: 28px;
     border-radius: 8px;
-    background: linear-gradient(135deg, #0066cc 0%, #2997ff 100%);
+    overflow: hidden;
+    background: #ffffff;
     display: flex;
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
-    color: #ffffff;
     box-shadow: 0 2px 8px rgba(0, 102, 204, 0.28);
+}
+
+.nav-brand__icon {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
 }
 
 .nav-brand__name {
