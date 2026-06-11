@@ -3,7 +3,6 @@
 
         <!-- 管理员信息 ── Apple-style Profile Trigger -->
         <el-popover
-            v-if="siteConfig.userInitialize"
             @show="onCurrentNavMenu(true, 'adminInfo')"
             @hide="onCurrentNavMenu(false, 'adminInfo')"
             placement="bottom-end"
@@ -41,10 +40,10 @@
                 <div class="profile-card__rule" />
                 <div class="profile-card__actions">
                     <button class="profile-card__btn profile-card__btn--ghost" @click="onAdminInfo">
-                        {{ t('layouts.personal data') }}
+                        个人资料
                     </button>
                     <button class="profile-card__btn profile-card__btn--danger" @click="onLogout">
-                        {{ t('layouts.cancellation') }}
+                        退出登录
                     </button>
                 </div>
             </div>
@@ -59,7 +58,6 @@
 import { ElMessage, type PopoverInstance } from 'element-plus'
 import screenfull from 'screenfull'
 import { computed, reactive, ref } from 'vue'
-import { useI18n } from 'vue-i18n'
 import Config from './config.vue'
 import { logout } from '/@/api/backend/index'
 import { postClearCache } from '/@/api/common'
@@ -69,19 +67,15 @@ import router from '/@/router'
 import { useAdminInfo } from '/@/stores/adminInfo'
 import { useConfig } from '/@/stores/config'
 import { ADMIN_INFO, BA_ACCOUNT } from '/@/stores/constant/cacheKey'
-import { useSiteConfig } from '/@/stores/siteConfig'
 import { useTerminal } from '/@/stores/terminal'
 import { fullUrl } from '/@/utils/common'
 import { routePush } from '/@/utils/router'
 import { Local, Session } from '/@/utils/storage'
 import { hotUpdateState, reloadServer } from '/@/utils/vite'
 
-const { t } = useI18n()
-
 const adminInfo   = useAdminInfo()
 const configStore = useConfig()
 const terminal    = useTerminal()
-const siteConfig  = useSiteConfig()
 const reloadHotServerPopover = ref<PopoverInstance>()
 
 const state = reactive({
@@ -111,7 +105,7 @@ const onHotServerOpt = (opt: 'reload' | 'cancel') => {
 
 const onFullScreen = () => {
     if (!screenfull.isEnabled) {
-        ElMessage.warning(t('layouts.Full screen is not supported'))
+        ElMessage.warning('当前浏览器不支持全屏')
         return false
     }
     screenfull.toggle()

@@ -25,6 +25,7 @@ import { BEFORE_RESIZE_LAYOUT } from "/@/stores/constant/cacheKey";
 import { isEmpty } from "lodash-es";
 import { setNavTabsWidth } from "/@/utils/layout";
 import adminBaseRoute from "/@/router/static/adminBase";
+import { ensureKeycloakSession } from "/@/utils/keycloak";
 
 defineOptions({
   components: { Default, Classic, Streamline, Double },
@@ -41,10 +42,12 @@ const state = reactive({
   autoMenuCollapseLock: false,
 });
 
-onMounted(() => {
+onMounted(async () => {
   if (!adminInfo.token) return router.push({ name: "adminLogin" });
+  const authenticated = await ensureKeycloakSession();
+  if (!authenticated) return router.push({ name: "adminLogin" });
 
-  init();
+  await init();
   setNavTabsWidth();
   useEventListener(window, "resize", setNavTabsWidth);
 });

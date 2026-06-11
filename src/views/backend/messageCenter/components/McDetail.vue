@@ -59,6 +59,7 @@
                         </dt>
                         <dd>{{ fullTime(msg.createdAt) }}</dd>
                     </div>
+                    
                     <div class="mc-detail__meta-row">
                         <dt>
                             <el-icon :size="14">

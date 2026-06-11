@@ -114,4 +114,36 @@ onBeforeRouteUpdate((to) => {
     color: var(--el-menu-active-color) !important;
     font-weight: 600;
 }
+
+.layouts-menu-vertical.el-menu--collapse {
+    width: 64px;
+    padding: 8px 0 30px;
+}
+
+.layouts-menu-vertical.el-menu--collapse .el-menu-item,
+.layouts-menu-vertical.el-menu--collapse .el-sub-menu__title {
+    width: 44px;
+    height: 42px;
+    margin: 2px auto;
+    padding: 0 !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.layouts-menu-vertical.el-menu--collapse .el-menu-item > .icon,
+.layouts-menu-vertical.el-menu--collapse .el-sub-menu__title > .icon {
+    margin: 0 !important;
+    width: 20px !important;
+    height: 20px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.layouts-menu-vertical.el-menu--collapse .menu-title,
+.layouts-menu-vertical.el-menu--collapse .menu-unread-badge,
+.layouts-menu-vertical.el-menu--collapse .el-sub-menu__icon-arrow {
+    display: none !important;
+}
 </style>

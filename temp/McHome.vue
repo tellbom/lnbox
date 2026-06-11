@@ -63,11 +63,11 @@ import { WarningFilled } from '@element-plus/icons-vue'
 import { useAdminInfo } from '/@/stores/adminInfo'
 import { getMyMessages, getUnreadCount } from '/@/api/messageCenter'
 import type { MessageItem } from '/@/api/messageCenter'
-import type { TrendPoint } from './home/McHomeTrendChart.vue'
-import McHomeStatCards  from './home/McHomeStatCards.vue'
-import McHomeTrendChart from './home/McHomeTrendChart.vue'
-import McHomeDistChart  from './home/McHomeDistChart.vue'
-import McHomeRecentList from './home/McHomeRecentList.vue'
+import type { TrendPoint } from './components/McHomeTrendChart.vue'
+import McHomeStatCards  from './components/McHomeStatCards.vue'
+import McHomeTrendChart from './components/McHomeTrendChart.vue'
+import McHomeDistChart  from './components/McHomeDistChart.vue'
+import McHomeRecentList from './components/McHomeRecentList.vue'
 
 const adminInfo = useAdminInfo()
 const router    = useRouter()
@@ -156,7 +156,7 @@ async function reload() {
     loadError.value = false
     try {
         const [msgs, countRes] = await Promise.all([
-            getMyMessages(1, 100),
+            getMyMessages(0, 100),
             getUnreadCount(),
         ])
         messages.value    = msgs    ?? []
