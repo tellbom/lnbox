@@ -1,106 +1,5 @@
 <template>
     <div class="nav-menus" :class="configStore.layout.layoutMode">
-        <!-- 需要重启 Vite 热更新服务警告 -->
-        <!-- <el-popover
-            ref="reloadHotServerPopover"
-            @show="onCurrentNavMenu(true, 'reloadHotServer')"
-            @hide="onCurrentNavMenu(false, 'reloadHotServer')"
-            :width="360"
-            v-if="hotUpdateState.dirtyFile"
-        >
-            <div>
-                <div class="el-popover__title">{{ t('vite.Reload hot server title') }}</div>
-                <div class="reload-hot-server-content">
-                    <p>
-                        <span>{{ t('vite.Reload hot server tips 1') }}</span>
-                        <span>【{{ t(`vite.Close type ${hotUpdateState.closeType}`) }}】</span>
-                        <span>{{ t('vite.Reload hot server tips 2') }}</span>
-                    </p>
-                    <p>{{ t('vite.Reload hot server tips 3') }}</p>
-                    <div class="reload-hot-server-buttons">
-                        <el-button @click="onHotServerOpt('cancel')">{{ t('vite.Later') }}</el-button>
-                        <el-button @click="onHotServerOpt('reload')" type="primary">{{ t('vite.Restart hot update') }}</el-button>
-                    </div>
-                </div>
-            </div>
-            <template #reference>
-                <div class="nav-menu-item" :class="state.currentNavMenu == 'reloadHotServer' ? 'hover' : ''">
-                    <Icon color="var(--el-color-danger)" class="nav-menu-icon" name="el-icon-Warning" size="18" />
-                </div>
-            </template>
-        </el-popover> -->
-
-        <!-- 站点主页 -->
-        <!-- <router-link class="h100" target="_blank" :title="t('Home')" to="/">
-            <div class="nav-menu-item">
-                <Icon :color="configStore.getColorVal('headerBarTabColor')" class="nav-menu-icon" name="el-icon-Monitor" size="18" />
-            </div>
-        </router-link> -->
-
-        <!-- 语言切换 -->
-        <!-- <el-dropdown
-            @visible-change="onCurrentNavMenu($event, 'lang')"
-            class="h100"
-            size="large"
-            :hide-timeout="50"
-            placement="bottom"
-            trigger="click"
-            :hide-on-click="true"
-        >
-            <div class="nav-menu-item pt2" :class="state.currentNavMenu == 'lang' ? 'hover' : ''">
-                <Icon :color="configStore.getColorVal('headerBarTabColor')" class="nav-menu-icon" name="local-lang" size="18" />
-            </div>
-            <template #dropdown>
-                <el-dropdown-menu class="dropdown-menu-box">
-                    <el-dropdown-item v-for="item in configStore.lang.langArray" :key="item.name" @click="editDefaultLang(item.name)">
-                        {{ item.value }}
-                    </el-dropdown-item>
-                </el-dropdown-menu>
-            </template>
-        </el-dropdown> -->
-
-        <!-- 全屏切换 -->
-        <!-- <div @click="onFullScreen" class="nav-menu-item" :class="state.isFullScreen ? 'hover' : ''">
-            <Icon
-                :color="configStore.getColorVal('headerBarTabColor')"
-                class="nav-menu-icon"
-                v-if="state.isFullScreen"
-                name="local-full-screen-cancel"
-                size="18"
-            />
-            <Icon :color="configStore.getColorVal('headerBarTabColor')" class="nav-menu-icon" v-else name="el-icon-FullScreen" size="18" />
-        </div> -->
-
-        <!-- 终端 - 仅超管 -->
-        <!-- <div v-if="adminInfo.super" @click="terminal.toggle()" class="nav-menu-item pt2">
-            <el-badge :is-dot="terminal.state.showDot">
-                <Icon :color="configStore.getColorVal('headerBarTabColor')" class="nav-menu-icon" name="local-terminal" size="26" />
-            </el-badge>
-        </div> -->
-
-        <!-- 清理缓存 - 仅超管 -->
-        <!-- <el-dropdown
-            v-if="adminInfo.super"
-            @visible-change="onCurrentNavMenu($event, 'clear')"
-            class="h100"
-            size="large"
-            :hide-timeout="50"
-            placement="bottom"
-            trigger="click"
-            :hide-on-click="true"
-        >
-            <div class="nav-menu-item" :class="state.currentNavMenu == 'clear' ? 'hover' : ''">
-                <Icon :color="configStore.getColorVal('headerBarTabColor')" class="nav-menu-icon" name="el-icon-Delete" size="18" />
-            </div>
-            <template #dropdown>
-                <el-dropdown-menu class="dropdown-menu-box">
-                    <el-dropdown-item @click="onClearCache('tp')">{{ t('utils.Clean up system cache') }}</el-dropdown-item>
-                    <el-dropdown-item @click="onClearCache('storage')">{{ t('utils.Clean up browser cache') }}</el-dropdown-item>
-                    <el-dropdown-item @click="onClearCache('all')" divided>{{ t('utils.Clean up all cache') }}</el-dropdown-item>
-                </el-dropdown-menu>
-            </template>
-        </el-dropdown> -->
-
         <!-- 管理员信息 -->
         <el-popover
             v-if="siteConfig.userInitialize"
@@ -108,36 +7,46 @@
             @hide="onCurrentNavMenu(false, 'adminInfo')"
             placement="bottom-end"
             :hide-after="0"
-            :width="260"
+            :width="240"
             trigger="click"
             popper-class="admin-info-box"
             v-model:visible="state.showAdminInfoPopover"
         >
             <template #reference>
-                <div class="admin-info" :class="state.currentNavMenu == 'adminInfo' ? 'hover' : ''">
-                    <el-avatar :size="25" :src="fullUrl(adminInfo.avatar)"></el-avatar>
-                    <div class="admin-name">{{ adminInfo.nickname }}</div>
+                <!-- Apple-style profile trigger -->
+                <div class="admin-trigger" :class="{ 'is-open': state.currentNavMenu == 'adminInfo' }">
+                    <el-avatar class="admin-trigger__avatar" :size="30" :src="fullUrl(adminInfo.avatar)">
+                        {{ adminInitial }}
+                    </el-avatar>
+                    <span class="admin-trigger__name">{{ adminInfo.nickname }}</span>
+                    <span class="admin-trigger__chevron">
+                        <el-icon :size="12"><ArrowDown /></el-icon>
+                    </span>
                 </div>
             </template>
-            <div>
-                <div class="admin-info-base">
-                    <el-avatar :size="70" :src="fullUrl(adminInfo.avatar)"></el-avatar>
-                    <div class="admin-info-other">
-                        <div class="admin-info-name">{{ adminInfo.nickname }}</div>
-                        <div class="admin-info-lasttime">{{ adminInfo.last_login_time }}</div>
+
+            <!-- Profile Card -->
+            <div class="profile-card">
+                <div class="profile-card__hero">
+                    <el-avatar class="profile-card__avatar" :size="52" :src="fullUrl(adminInfo.avatar)">
+                        {{ adminInitial }}
+                    </el-avatar>
+                    <div class="profile-card__info">
+                        <div class="profile-card__name">{{ adminInfo.nickname }}</div>
+                        <div v-if="adminInfo.userid" class="profile-card__id">{{ adminInfo.userid }}</div>
                     </div>
                 </div>
-                <div class="admin-info-footer">
-                    <el-button @click="onAdminInfo" type="primary" plain>{{ t('layouts.personal data') }}</el-button>
-                    <el-button @click="onLogout" type="danger" plain>{{ t('layouts.cancellation') }}</el-button>
+                <div class="profile-card__divider" />
+                <div class="profile-card__actions">
+                    <button class="profile-card__btn profile-card__btn--secondary" @click="onAdminInfo">
+                        {{ t('layouts.personal data') }}
+                    </button>
+                    <button class="profile-card__btn profile-card__btn--danger" @click="onLogout">
+                        {{ t('layouts.cancellation') }}
+                    </button>
                 </div>
             </div>
         </el-popover>
-
-        <!-- 配置 -->
-        <!-- <div @click="configStore.setLayout('showDrawer', true)" class="nav-menu-item">
-            <Icon :color="configStore.getColorVal('headerBarTabColor')" class="nav-menu-icon" name="fa fa-cogs" size="18" />
-        </div> -->
 
         <Config />
         <TerminalVue />
@@ -145,13 +54,13 @@
 </template>
 
 <script lang="ts" setup>
-import { ElMessage, type PopoverInstance } from 'element-plus'
+import { ElMessage } from 'element-plus'
 import screenfull from 'screenfull'
-import { reactive, ref } from 'vue'
+import { computed, reactive, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { ArrowDown } from '@element-plus/icons-vue'
 import Config from './config.vue'
 import { logout } from '/@/api/backend/index'
-import { postClearCache } from '/@/api/common'
 import TerminalVue from '/@/components/terminal/index.vue'
 import { editDefaultLang } from '/@/lang'
 import router from '/@/router'
@@ -163,15 +72,13 @@ import { useTerminal } from '/@/stores/terminal'
 import { fullUrl } from '/@/utils/common'
 import { routePush } from '/@/utils/router'
 import { Local, Session } from '/@/utils/storage'
-import { hotUpdateState, reloadServer } from '/@/utils/vite'
 
 const { t } = useI18n()
 
-const adminInfo = useAdminInfo()
-const configStore = useConfig()
-const terminal = useTerminal()
-const siteConfig = useSiteConfig()
-const reloadHotServerPopover = ref<PopoverInstance>()
+const adminInfo    = useAdminInfo()
+const configStore  = useConfig()
+const terminal     = useTerminal()
+const siteConfig   = useSiteConfig()
 
 const state = reactive({
     isFullScreen: false,
@@ -180,27 +87,14 @@ const state = reactive({
     showAdminInfoPopover: false,
 })
 
+// 用户名首字母，头像加载失败时作 fallback
+const adminInitial = computed(() => {
+    const name = adminInfo.nickname || adminInfo.username || '?'
+    return name.charAt(0).toUpperCase()
+})
+
 const onCurrentNavMenu = (status: boolean, name: string) => {
     state.currentNavMenu = status ? name : ''
-}
-
-const onHotServerOpt = (opt: 'reload' | 'cancel') => {
-    if (opt == 'cancel') {
-        reloadHotServerPopover.value?.hide()
-    } else {
-        reloadServer('manual')
-    }
-}
-
-const onFullScreen = () => {
-    if (!screenfull.isEnabled) {
-        ElMessage.warning(t('layouts.Full screen is not supported'))
-        return false
-    }
-    screenfull.toggle()
-    screenfull.onchange(() => {
-        state.isFullScreen = screenfull.isFullscreen
-    })
 }
 
 const onAdminInfo = () => {
@@ -217,113 +111,186 @@ const onLogout = () => {
 
 const onClearCache = (type: string) => {
     if (type == 'storage' || type == 'all') {
-        const adminInfo = Local.get(ADMIN_INFO)
+        const adminInfoData = Local.get(ADMIN_INFO)
         const baAccount = Local.get(BA_ACCOUNT)
         Session.clear()
         Local.clear()
-        Local.set(ADMIN_INFO, adminInfo)
+        Local.set(ADMIN_INFO, adminInfoData)
         Local.set(BA_ACCOUNT, baAccount)
         if (type == 'storage') return
     }
-    postClearCache(type).then(() => {})
+}
+
+const onFullScreen = () => {
+    if (!screenfull.isEnabled) {
+        ElMessage.warning(t('layouts.Full screen is not supported'))
+        return false
+    }
+    screenfull.toggle()
+    screenfull.onchange(() => {
+        state.isFullScreen = screenfull.isFullscreen
+    })
 }
 </script>
 
 <style scoped lang="scss">
-.nav-menus.Default {
-    border-radius: var(--el-border-radius-base);
-    box-shadow: var(--el-box-shadow-light);
-}
-.reload-hot-server-content {
-    font-size: var(--el-font-size-small);
-    p {
-        margin-bottom: 6px;
-    }
-    .reload-hot-server-buttons {
-        display: flex;
-        justify-content: flex-end;
-    }
-}
 .nav-menus {
     display: flex;
     align-items: center;
     height: 100%;
     margin-left: auto;
     background-color: v-bind('configStore.getColorVal("headerBarBackground")');
-    .nav-menu-item {
-        height: 100%;
-        width: 40px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        .nav-menu-icon {
-            box-sizing: content-box;
-            color: v-bind('configStore.getColorVal("headerBarTabColor")');
-        }
-        &:hover {
-            .icon {
-                animation: twinkle 0.3s ease-in-out;
-            }
-        }
-    }
-    .admin-info {
-        display: flex;
-        height: 100%;
-        padding: 0 10px;
-        align-items: center;
-        cursor: pointer;
-        user-select: none;
-        color: v-bind('configStore.getColorVal("headerBarTabColor")');
-    }
-    .admin-name {
-        padding-left: 6px;
-        white-space: nowrap;
-    }
-    .nav-menu-item:hover,
-    .admin-info:hover,
-    .nav-menu-item.hover,
-    .admin-info.hover {
-        background: v-bind('configStore.getColorVal("headerBarHoverBackground")');
-    }
-}
-.dropdown-menu-box :deep(.el-dropdown-menu__item) {
-    justify-content: center;
-}
-.admin-info-base {
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    padding-top: 10px;
-    .admin-info-other {
-        display: block;
-        width: 100%;
-        text-align: center;
-        padding: 10px 0;
-        .admin-info-name {
-            font-size: var(--el-font-size-large);
-        }
-    }
-}
-.admin-info-footer {
-    padding: 10px 0;
-    margin: 0 -12px -12px -12px;
-    display: flex;
-    justify-content: space-around;
-}
-.pt2 {
-    padding-top: 2px;
 }
 
-@keyframes twinkle {
-    0% {
-        transform: scale(0);
+/* ── Profile Trigger ───────────────────────────────────────────────── */
+.admin-trigger {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    height: 36px;
+    padding: 0 12px 0 6px;
+    margin-right: 8px;
+    border-radius: 99px;
+    cursor: pointer;
+    transition: background 0.14s;
+    user-select: none;
+    border: 1px solid transparent;
+
+    &:hover,
+    &.is-open {
+        background: v-bind('configStore.getColorVal("headerBarHoverBackground")');
+        border-color: rgba(0, 0, 0, 0.07);
     }
-    80% {
-        transform: scale(1.2);
+}
+
+.admin-trigger__avatar {
+    flex-shrink: 0;
+    font-size: 13px;
+    font-weight: 600;
+    background: #d2d2d7;
+    color: #1d1d1f;
+}
+
+.admin-trigger__name {
+    font-family: 'SF Pro Text', system-ui, -apple-system, sans-serif;
+    font-size: 13.5px;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    color: v-bind('configStore.getColorVal("headerBarTabColor")');
+    white-space: nowrap;
+    max-width: 120px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.admin-trigger__chevron {
+    color: v-bind('configStore.getColorVal("headerBarTabColor")');
+    opacity: 0.45;
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+    transition: transform 0.18s;
+}
+
+.admin-trigger.is-open .admin-trigger__chevron {
+    transform: rotate(180deg);
+}
+</style>
+
+<!-- Profile Card 弹出层（非 scoped，作用于 teleport 出的 popper） -->
+<style lang="scss">
+.admin-info-box.el-popover {
+    padding: 0 !important;
+    border-radius: 14px !important;
+    border: 1px solid rgba(0, 0, 0, 0.08) !important;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12) !important;
+    overflow: hidden;
+}
+
+.profile-card {
+    padding: 20px 16px 0;
+
+    &__hero {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        padding-bottom: 16px;
     }
-    100% {
-        transform: scale(1);
+
+    &__avatar {
+        flex-shrink: 0;
+        font-size: 20px;
+        font-weight: 600;
+        background: #d2d2d7;
+        color: #1d1d1f;
+    }
+
+    &__info {
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+        min-width: 0;
+    }
+
+    &__name {
+        font-family: 'SF Pro Text', system-ui, -apple-system, sans-serif;
+        font-size: 15px;
+        font-weight: 600;
+        color: #1d1d1f;
+        letter-spacing: -0.15px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    &__id {
+        font-family: 'SF Pro Text', system-ui, -apple-system, sans-serif;
+        font-size: 12px;
+        color: #86868b;
+        letter-spacing: 0;
+        white-space: nowrap;
+    }
+
+    &__divider {
+        height: 1px;
+        background: #f0f0f0;
+        margin: 0 -16px;
+    }
+
+    &__actions {
+        display: flex;
+        gap: 8px;
+        padding: 12px 0;
+    }
+
+    &__btn {
+        flex: 1;
+        height: 34px;
+        border-radius: 8px;
+        border: 1px solid #e3e3e6;
+        font-family: 'SF Pro Text', system-ui, -apple-system, sans-serif;
+        font-size: 13px;
+        font-weight: 500;
+        letter-spacing: -0.01em;
+        cursor: pointer;
+        transition: background 0.12s, transform 0.08s;
+
+        &:active { transform: scale(0.96); }
+
+        &--secondary {
+            background: #fff;
+            color: #1d1d1f;
+
+            &:hover { background: #f5f5f7; }
+        }
+
+        &--danger {
+            background: #fff;
+            color: #d70015;
+            border-color: rgba(215, 0, 21, 0.2);
+
+            &:hover { background: rgba(215, 0, 21, 0.05); }
+        }
     }
 }
 </style>

@@ -30,9 +30,10 @@ const state = reactive({
 })
 
 const verticalMenusScrollbarHeight = computed(() => {
+    // logo.vue 卡片高度：展开 100px，折叠同样 100px（保持一致）
     let menuTopBarHeight = 0
     if (config.layout.menuShowTopBar) {
-        menuTopBarHeight = 50
+        menuTopBarHeight = 100
     }
     if (config.layout.layoutMode == 'Default') {
         return 'calc(100vh - ' + (32 + menuTopBarHeight) + 'px)'
@@ -47,7 +48,6 @@ const verticalMenusScrollbarHeight = computed(() => {
 const currentRouteActive = (currentRoute: RouteLocationNormalizedLoaded) => {
     const tabView = navTabs.getTabsViewDataByRoute(currentRoute)
     if (tabView) {
-        // 以路由 fullPath 匹配的菜单优先，且 fullPath 无匹配时，回退到 path 的匹配菜单
         state.defaultActive = tabView.meta!.matched as string
     }
 }
@@ -70,6 +70,7 @@ onBeforeRouteUpdate((to) => {
     currentRouteActive(to)
 })
 </script>
+
 <style>
 .vertical-menus-scrollbar {
     height: v-bind(verticalMenusScrollbarHeight);
