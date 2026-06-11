@@ -13,6 +13,8 @@ export const useMcStore = defineStore('messageCenter', () => {
     const unreadCount = ref(0)
     const loading = ref(false)
     const loadError = ref(false)
+    let messagesRequest: Promise<void> | null = null
+    let unreadCountRequest: Promise<void> | null = null
 
     function filtered(filter: string, query: string): MessageItem[] {
         const q = query.trim().toLowerCase()
@@ -41,26 +43,41 @@ export const useMcStore = defineStore('messageCenter', () => {
     })
 
     async function fetchMessages() {
-        loading.value = true
-        loadError.value = false
+        if (messagesRequest) return messagesRequest
 
-        try {
-            const data = await getMyMessages(1, 100)
-            messages.value = data ?? []
-        } catch {
-            loadError.value = true
-        } finally {
-            loading.value = false
-        }
+        messagesRequest = (async () => {
+            loading.value = true
+            loadError.value = false
+
+            try {
+                const data = await getMyMessages(1, 100)
+                messages.value = data ?? []
+            } catch {
+                loadError.value = true
+            } finally {
+                loading.value = false
+                messagesRequest = null
+            }
+        })()
+
+        return messagesRequest
     }
 
     async function fetchUnreadCount() {
-        try {
-            const data = await getUnreadCount()
-            unreadCount.value = data?.unreadCount ?? 0
-        } catch {
-            // Badge refresh failure should not block page rendering.
-        }
+        if (unreadCountRequest) return unreadCountRequest
+
+        unreadCountRequest = (async () => {
+            try {
+                const data = await getUnreadCount()
+                unreadCount.value = data?.unreadCount ?? 0
+            } catch {
+                // Badge refresh failure should not block page rendering.
+            } finally {
+                unreadCountRequest = null
+            }
+        })()
+
+        return unreadCountRequest
     }
 
     async function markRead(messageId: string) {

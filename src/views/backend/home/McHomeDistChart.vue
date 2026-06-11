@@ -116,6 +116,7 @@ onBeforeUnmount(() => { ro?.disconnect(); chart?.dispose(); chart = null })
     display: flex;
     flex-direction: column;
     gap: 16px;
+    min-width: 0;
     box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.04);
 }
 
@@ -133,13 +134,15 @@ onBeforeUnmount(() => { ro?.disconnect(); chart?.dispose(); chart = null })
 
 .dist-card__body {
     display: flex;
+    flex-direction: column;
     align-items: center;
-    gap: 16px;
+    gap: 14px;
+    min-width: 0;
 }
 
 .dist-card__chart {
-    width: 120px;
-    height: 120px;
+    width: 150px;
+    height: 150px;
     flex-shrink: 0;
 }
 
@@ -167,14 +170,16 @@ onBeforeUnmount(() => { ro?.disconnect(); chart?.dispose(); chart = null })
 }
 
 .dist-card__legend {
-    flex: 1;
+    width: 100%;
+    min-width: 0;
     display: flex;
     flex-direction: column;
     gap: 0;
 }
 
 .dist-legend-row {
-    display: flex;
+    display: grid;
+    grid-template-columns: 8px minmax(0, 1fr) minmax(32px, auto) minmax(38px, auto);
     align-items: center;
     gap: 8px;
     padding: 10px 0;
@@ -190,7 +195,14 @@ onBeforeUnmount(() => { ro?.disconnect(); chart?.dispose(); chart = null })
     flex-shrink: 0;
 }
 
-.dist-legend-name { flex: 1; font-size: 13px; color: #37373a; }
+.dist-legend-name {
+    min-width: 0;
+    overflow: hidden;
+    color: #37373a;
+    font-size: 13px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
 
 .dist-legend-val {
     font-size: 16px;

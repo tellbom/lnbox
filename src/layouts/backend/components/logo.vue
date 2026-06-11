@@ -65,7 +65,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, onMounted } from 'vue'
 import { useConfig } from '/@/stores/config'
 import { useSiteConfig } from '/@/stores/siteConfig'
 import { useMcStore } from '/@/stores/messageCenter'
@@ -104,6 +104,11 @@ const onMenuCollapse = () => {
     })
     setTimeout(() => setNavTabsWidth(), 350)
 }
+
+onMounted(() => {
+    if (!mcStore.messages.length) mcStore.fetchMessages()
+    mcStore.fetchUnreadCount()
+})
 </script>
 
 <style scoped lang="scss">

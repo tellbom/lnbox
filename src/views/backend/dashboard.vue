@@ -41,11 +41,11 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { WarningFilled } from '@element-plus/icons-vue'
 import { useAdminInfo } from '/@/stores/adminInfo'
-import { getMyMessages, getUnreadCount, type MessageItem } from '/@/api/messageCenter'
+import { useMcStore } from '/@/stores/messageCenter'
 import type { TrendPoint } from './home/McHomeTrendChart.vue'
 import McHomeStatCards  from './home/McHomeStatCards.vue'
 import McHomeTrendChart from './home/McHomeTrendChart.vue'
@@ -54,12 +54,13 @@ import McHomeRecentList from './home/McHomeRecentList.vue'
 
 const adminInfo = useAdminInfo()
 const router    = useRouter()
+const mcStore   = useMcStore()
 
 // ── 原始数据 ──────────────────────────────────────────────────────────
-const messages    = ref<MessageItem[]>([])
-const unreadCount = ref(0)
-const loading     = ref(false)
-const loadError   = ref(false)
+const messages    = computed(() => mcStore.messages)
+const unreadCount = computed(() => mcStore.unreadCount)
+const loading     = computed(() => mcStore.loading)
+const loadError   = computed(() => mcStore.loadError)
 
 // ── 派生统计 ──────────────────────────────────────────────────────────
 const stats = computed(() => {
@@ -119,20 +120,10 @@ const todayLabel = computed(() => {
 
 // ── API（父组件唯一入口）──────────────────────────────────────────────
 async function reload() {
-    loading.value   = true
-    loadError.value = false
-    try {
-        const [msgs, countRes] = await Promise.all([
-            getMyMessages(1, 100),
-            getUnreadCount(),
-        ])
-        messages.value    = msgs    ?? []
-        unreadCount.value = countRes?.unreadCount ?? 0
-    } catch {
-        loadError.value = true
-    } finally {
-        loading.value = false
-    }
+    await Promise.all([
+        mcStore.fetchMessages(),
+        mcStore.fetchUnreadCount(),
+    ])
 }
 
 function onOpenMessage(_id: string) {
