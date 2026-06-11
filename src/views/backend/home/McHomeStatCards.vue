@@ -6,17 +6,23 @@
             class="stat-card"
             :class="`stat-card--${card.color}`"
         >
-            <div class="stat-card__top">
-                <span class="stat-card__label">{{ card.label }}</span>
-                <span class="stat-card__icon-wrap">
-                    <el-icon :size="18"><component :is="card.icon" /></el-icon>
-                </span>
+            <!-- 顶部：图标 -->
+            <div class="stat-card__icon-wrap">
+                <el-icon :size="20"><component :is="card.icon" /></el-icon>
             </div>
+
+            <!-- 数字 -->
             <div class="stat-card__value">
                 <span v-if="loading" class="stat-card__skeleton" />
                 <span v-else class="stat-card__num">{{ card.value }}</span>
             </div>
-            <div class="stat-card__foot">{{ card.desc }}</div>
+
+            <!-- 标签 + 描述 -->
+            <div class="stat-card__label">{{ card.label }}</div>
+            <div class="stat-card__desc">{{ card.desc }}</div>
+
+            <!-- 装饰光晕 -->
+            <div class="stat-card__glow" />
         </div>
     </div>
 </template>
@@ -26,45 +32,30 @@ import { computed } from 'vue'
 import { Message, View, Bell, Link } from '@element-plus/icons-vue'
 
 const props = defineProps<{
-    total:     number
-    unread:    number
-    today:     number
-    withUrl:   number
-    loading:   boolean
+    total:   number
+    unread:  number
+    today:   number
+    withUrl: number
+    loading: boolean
 }>()
 
 const cards = computed(() => [
     {
-        key:   'total',
-        label: '全部消息',
-        value: props.total,
-        desc:  '最近 100 条',
-        icon:  Message,
-        color: 'blue',
+        key: 'total', label: '全部消息', value: props.total,
+        desc: '最近 100 条', icon: Message, color: 'blue',
     },
     {
-        key:   'unread',
-        label: '未读消息',
-        value: props.unread,
-        desc:  props.unread > 0 ? '待处理' : '全部已读',
-        icon:  Bell,
+        key: 'unread', label: '未读消息', value: props.unread,
+        desc: props.unread > 0 ? '待处理' : '全部已读', icon: Bell,
         color: props.unread > 0 ? 'orange' : 'green',
     },
     {
-        key:   'today',
-        label: '今日新增',
-        value: props.today,
-        desc:  '今天收到的消息',
-        icon:  View,
-        color: 'purple',
+        key: 'today', label: '今日新增', value: props.today,
+        desc: '今天收到的消息', icon: View, color: 'purple',
     },
     {
-        key:   'withUrl',
-        label: '含跳转链接',
-        value: props.withUrl,
-        desc:  '可跳转到业务页面',
-        icon:  Link,
-        color: 'teal',
+        key: 'withUrl', label: '含跳转链接', value: props.withUrl,
+        desc: '可跳转到业务页面', icon: Link, color: 'teal',
     },
 ])
 </script>
@@ -77,91 +68,132 @@ const cards = computed(() => [
 }
 
 .stat-card {
-    background: #ffffff;
-    border: 1px solid #e3e3e6;
-    border-radius: 14px;
-    padding: 20px 22px 18px;
+    position: relative;
+    overflow: hidden;
+    border-radius: 16px;
+    padding: 22px 22px 20px;
     display: flex;
     flex-direction: column;
-    gap: 12px;
-    transition: border-color 0.15s, box-shadow 0.15s;
+    gap: 8px;
+    transition: transform 0.18s, box-shadow 0.18s;
+    cursor: default;
 
     &:hover {
-        border-color: #c8c8cc;
-        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 28px rgba(0,0,0,0.12);
     }
 }
 
-.stat-card__top {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+/* ── 色彩主题 ──────────────────────────────────────────────────────── */
+.stat-card--blue {
+    background: linear-gradient(135deg, #0066cc 0%, #2997ff 100%);
+    box-shadow: 0 4px 20px rgba(0, 102, 204, 0.30);
+    .stat-card__icon-wrap { background: rgba(255,255,255,0.18); color: #fff; }
+    .stat-card__num       { color: #fff; }
+    .stat-card__label     { color: rgba(255,255,255,0.9); }
+    .stat-card__desc      { color: rgba(255,255,255,0.6); }
+    .stat-card__glow      { background: radial-gradient(circle at 80% 20%, rgba(255,255,255,0.14) 0%, transparent 60%); }
 }
 
-.stat-card__label {
-    font-family: 'SF Pro Text', system-ui, -apple-system, sans-serif;
-    font-size: 13px;
-    font-weight: 400;
-    color: #86868b;
-    letter-spacing: -0.01em;
+.stat-card--orange {
+    background: linear-gradient(135deg, #e07400 0%, #ff9500 100%);
+    box-shadow: 0 4px 20px rgba(224, 116, 0, 0.28);
+    .stat-card__icon-wrap { background: rgba(255,255,255,0.18); color: #fff; }
+    .stat-card__num       { color: #fff; }
+    .stat-card__label     { color: rgba(255,255,255,0.9); }
+    .stat-card__desc      { color: rgba(255,255,255,0.6); }
+    .stat-card__glow      { background: radial-gradient(circle at 80% 20%, rgba(255,255,255,0.14) 0%, transparent 60%); }
 }
 
+.stat-card--green {
+    background: linear-gradient(135deg, #1a8a2e 0%, #34c759 100%);
+    box-shadow: 0 4px 20px rgba(52, 199, 89, 0.28);
+    .stat-card__icon-wrap { background: rgba(255,255,255,0.18); color: #fff; }
+    .stat-card__num       { color: #fff; }
+    .stat-card__label     { color: rgba(255,255,255,0.9); }
+    .stat-card__desc      { color: rgba(255,255,255,0.6); }
+    .stat-card__glow      { background: radial-gradient(circle at 80% 20%, rgba(255,255,255,0.14) 0%, transparent 60%); }
+}
+
+.stat-card--purple {
+    background: linear-gradient(135deg, #4a42c8 0%, #7c6fde 100%);
+    box-shadow: 0 4px 20px rgba(88, 86, 214, 0.28);
+    .stat-card__icon-wrap { background: rgba(255,255,255,0.18); color: #fff; }
+    .stat-card__num       { color: #fff; }
+    .stat-card__label     { color: rgba(255,255,255,0.9); }
+    .stat-card__desc      { color: rgba(255,255,255,0.6); }
+    .stat-card__glow      { background: radial-gradient(circle at 80% 20%, rgba(255,255,255,0.14) 0%, transparent 60%); }
+}
+
+.stat-card--teal {
+    background: linear-gradient(135deg, #006b7a 0%, #00b5cc 100%);
+    box-shadow: 0 4px 20px rgba(0, 181, 204, 0.26);
+    .stat-card__icon-wrap { background: rgba(255,255,255,0.18); color: #fff; }
+    .stat-card__num       { color: #fff; }
+    .stat-card__label     { color: rgba(255,255,255,0.9); }
+    .stat-card__desc      { color: rgba(255,255,255,0.6); }
+    .stat-card__glow      { background: radial-gradient(circle at 80% 20%, rgba(255,255,255,0.14) 0%, transparent 60%); }
+}
+
+/* ── 子元素 ─────────────────────────────────────────────────────────── */
 .stat-card__icon-wrap {
-    width: 36px;
-    height: 36px;
-    border-radius: 10px;
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
     display: flex;
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
+    margin-bottom: 4px;
 }
 
-/* color variants */
-.stat-card--blue  .stat-card__icon-wrap { background: rgba(0, 102, 204, 0.10); color: #0066cc; }
-.stat-card--orange .stat-card__icon-wrap { background: rgba(255, 149, 0, 0.10);  color: #e07400; }
-.stat-card--green  .stat-card__icon-wrap { background: rgba(52, 199, 89, 0.12);  color: #1a8a2e; }
-.stat-card--purple .stat-card__icon-wrap { background: rgba(88, 86, 214, 0.10);  color: #5856d6; }
-.stat-card--teal   .stat-card__icon-wrap { background: rgba(90, 200, 250, 0.14); color: #007aab; }
-
 .stat-card__value {
-    min-height: 46px;
+    min-height: 52px;
     display: flex;
     align-items: flex-end;
 }
 
 .stat-card__num {
     font-family: 'SF Pro Text', system-ui, -apple-system, sans-serif;
-    font-size: 42px;
-    font-weight: 600;
+    font-size: 46px;
+    font-weight: 700;
     line-height: 1;
-    letter-spacing: -1px;
-    color: #1d1d1f;
+    letter-spacing: -1.5px;
     font-feature-settings: "tnum" 1;
 }
 
-.stat-card--orange .stat-card__num { color: #e07400; }
-.stat-card--green  .stat-card__num { color: #1a8a2e; }
-
 .stat-card__skeleton {
     display: block;
-    width: 80px;
-    height: 42px;
+    width: 70px;
+    height: 46px;
     border-radius: 8px;
-    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
-    background-size: 400% 100%;
-    animation: shimmer 1.4s infinite;
+    background: rgba(255,255,255,0.25);
+    animation: pulse 1.4s ease-in-out infinite;
 }
 
-.stat-card__foot {
+.stat-card__label {
+    font-family: 'SF Pro Text', system-ui, -apple-system, sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: -0.15px;
+}
+
+.stat-card__desc {
     font-family: 'SF Pro Text', system-ui, -apple-system, sans-serif;
     font-size: 12px;
-    color: #86868b;
     letter-spacing: -0.01em;
 }
 
-@keyframes shimmer {
-    0%   { background-position: 100% 0; }
-    100% { background-position: -100% 0; }
+/* 装饰光晕 */
+.stat-card__glow {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 0.5; }
+    50%       { opacity: 1; }
 }
 
 @media (max-width: 1200px) {

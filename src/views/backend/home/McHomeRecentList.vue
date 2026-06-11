@@ -76,8 +76,9 @@ function relTime(iso: string): string {
 <style scoped lang="scss">
 .recent-card {
     background: #ffffff;
-    border: 1px solid #e3e3e6;
-    border-radius: 14px;
+    
+    border-radius: 16px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.04);
     padding: 20px 22px;
     display: flex;
     flex-direction: column;
