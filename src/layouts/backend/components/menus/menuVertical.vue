@@ -30,21 +30,21 @@ const state = reactive({
 })
 
 const verticalMenusScrollbarHeight = computed(() => {
-    // logo.vue 卡片高度：展开 100px，折叠同样 100px（保持一致）
-    let menuTopBarHeight = 0
-    if (config.layout.menuShowTopBar) {
-        menuTopBarHeight = 100
+    /*
+     * Layout after restructure:
+     *   outer header  = 50px  (full-width, lives outside aside)
+     *   logo card     = 100px (inside aside, when menuShowTopBar is true)
+     * Default mode adds 32px margin on the aside.
+     */
+    const headerH = 50
+    const logoH   = config.layout.menuShowTopBar ? 100 : 0
+
+    if (config.layout.layoutMode === 'Default') {
+        return `calc(100vh - ${headerH + 32 + logoH}px)`
     }
-    if (config.layout.layoutMode == 'Default') {
-        return 'calc(100vh - ' + (32 + menuTopBarHeight) + 'px)'
-    } else {
-        return 'calc(100vh - ' + menuTopBarHeight + 'px)'
-    }
+    return `calc(100vh - ${headerH + logoH}px)`
 })
 
-/**
- * 激活当前路由对应的菜单
- */
 const currentRouteActive = (currentRoute: RouteLocationNormalizedLoaded) => {
     const tabView = navTabs.getTabsViewDataByRoute(currentRoute)
     if (tabView) {
@@ -52,10 +52,11 @@ const currentRouteActive = (currentRoute: RouteLocationNormalizedLoaded) => {
     }
 }
 
-// 滚动条滚动到激活菜单所在位置
 const verticalMenusScroll = () => {
     nextTick(() => {
-        let activeMenu: HTMLElement | null = document.querySelector('.el-menu.layouts-menu-vertical li.is-active')
+        const activeMenu: HTMLElement | null = document.querySelector(
+            '.el-menu.layouts-menu-vertical li.is-active'
+        )
         if (!activeMenu) return false
         layoutMenuScrollbarRef.value?.setScrollTop(activeMenu.offsetTop)
     })
@@ -76,6 +77,8 @@ onBeforeRouteUpdate((to) => {
     height: v-bind(verticalMenusScrollbarHeight);
     background-color: v-bind('config.getColorVal("menuBackground")');
 }
+
+/* ── Apple-style menu items ─────────────────────────────────────────── */
 .layouts-menu-vertical {
     border: 0;
     padding: 8px 0 30px;
@@ -85,30 +88,30 @@ onBeforeRouteUpdate((to) => {
     --ba-menu-active-bg: v-bind('config.getColorVal("menuActiveBackground")');
     font-family: 'SF Pro Text', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 }
+
 .layouts-menu-vertical .el-menu-item,
 .layouts-menu-vertical .el-sub-menu__title {
-    height: 44px;
-    line-height: 44px;
+    height: 42px;
+    line-height: 42px;
     margin: 2px 10px;
     border-radius: 8px;
-    color: var(--el-menu-text-color);
     font-size: 14px;
     font-weight: 400;
-    letter-spacing: 0;
+    letter-spacing: -0.01em;
+    color: var(--el-menu-text-color);
+    transition: background 0.12s, color 0.12s;
 }
+
 .layouts-menu-vertical .el-menu-item:hover,
 .layouts-menu-vertical .el-sub-menu__title:hover {
-    background-color: #ffffff;
+    background-color: rgba(0, 0, 0, 0.045);
     color: var(--el-menu-active-color);
 }
+
 .layouts-menu-vertical .el-menu-item.is-active,
 .layouts-menu-vertical .el-sub-menu.is-active > .el-sub-menu__title {
     background-color: var(--ba-menu-active-bg) !important;
     color: var(--el-menu-active-color) !important;
-    font-weight: 600;
-}
-.layouts-menu-vertical .el-menu-item.is-active .menu-title,
-.layouts-menu-vertical .el-sub-menu.is-active > .el-sub-menu__title .menu-title {
     font-weight: 600;
 }
 </style>
