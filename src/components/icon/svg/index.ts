@@ -1,4 +1,5 @@
 import { readFileSync, readdirSync } from 'fs'
+import { extname } from 'path'
 
 let idPerfix = ''
 const iconNames: string[] = []
@@ -15,10 +16,10 @@ function findSvgFile(dir: string): string[] {
         withFileTypes: true,
     })
     for (const dirent of dirents) {
-        iconNames.push(`${idPerfix}-${dirent.name.replace('.svg', '')}`)
         if (dirent.isDirectory()) {
             svgRes.push(...findSvgFile(dir + dirent.name + '/'))
-        } else {
+        } else if (extname(dirent.name).toLowerCase() === '.svg') {
+            iconNames.push(`${idPerfix}-${dirent.name.replace('.svg', '')}`)
             const svg = readFileSync(dir + dirent.name)
                 .toString()
                 .replace(clearReturn, '')
